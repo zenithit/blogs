@@ -2,6 +2,20 @@ class MicropostsController < ApplicationController
   before_action :logged_in_user, only: [:create, :destroy]
   before_action :correct_user,   only: :destroy
 
+  def index
+    @microposts = Micropost.paginate(page: params[:page])
+  end
+
+  def show
+    @micropost = Micropost.find(params[:id])
+    @comments = @micropost.comments.paginate(page: params[:page])
+    @comment = @micropost.comments.build if logged_in?
+  end
+
+  def new
+    @micropost = Micropost.new
+  end
+
   def destroy
     @micropost.destroy
     flash[:success] = "Micropost deleted"
